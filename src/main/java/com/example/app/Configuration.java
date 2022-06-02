@@ -40,9 +40,23 @@ public class Configuration {
     }
 
     @Bean
+    public ThreadPoolTaskExecutor routingThreadPoolTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(ASSIGN_GATEWAY_TASK_EXECUTOR_CORE_POOL_SIZE);
+        executor.setMaxPoolSize(ASSIGN_GATEWAY_TASK_EXECUTOR_MAX_POOL_SIZE);
+        executor.setQueueCapacity(ASSIGN_GATEWAY_TASK_EXECUTOR_QUEUE_CAPACITY);
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.initialize();
+        return executor;
+    }
+
+    @Bean
     public MessageChannel outputMessageChannel() {
         return new ExecutorChannel(outputThreadPoolTaskExecutor());
     }
 
-
+    @Bean
+    public MessageChannel routingChannel() {
+        return new ExecutorChannel(routingThreadPoolTaskExecutor());
+    }
 }
